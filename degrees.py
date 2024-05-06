@@ -91,8 +91,10 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-
-    # TODO
+    current_person = source
+    
+    
+    
     raise NotImplementedError
 
 
