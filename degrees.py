@@ -91,7 +91,24 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    current_person = source
+    current_person = Node(source)
+    frontier = QueueFrontier()
+    explored = ()
+    frontier.add((current_person,))
+    while current_person != target:
+        if frontier.empty():
+            return None
+        also_starring = neighbors_for_person(current_person.state)
+        for movie_id, person_id in also_starring:
+            if person_id not in explored and not frontier.contains_state((movie_id, person_id)):
+                explored.add(current_person.state)
+                current_person = Node((person_id,movie_id), current_person)
+                frontier.add((movie_id, person_id))
+    #solution
+
+        
+
+
     
     
     
