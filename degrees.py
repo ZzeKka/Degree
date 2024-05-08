@@ -56,7 +56,6 @@ def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
-
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
@@ -88,31 +87,30 @@ def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
-
     If no possible path, returns None.
     """
-    current_person = Node(source)
+    current_person = Node((None,source), None, None)
     frontier = QueueFrontier()
-    explored = ()
-    frontier.add((current_person,))
-    while current_person != target:
+    explored = set()
+    frontier.add(current_person)
+    while current_person.state[1] != target:
         if frontier.empty():
             return None
-        also_starring = neighbors_for_person(current_person.state)
+        current_person = frontier.remove()
+        also_starring = neighbors_for_person(current_person.state[1])
         for movie_id, person_id in also_starring:
-            if person_id not in explored and not frontier.contains_state((movie_id, person_id)):
-                explored.add(current_person.state)
-                current_person = Node((person_id,movie_id), current_person)
-                frontier.add((movie_id, person_id))
-    #solution
+            if movie_id not in explored and not frontier.contains_state((movie_id, person_id)):
+                explored.add(movie_id)
+                frontier.add(Node((movie_id,person_id), current_person, None))
+    # Solution found
+    solution = []
+    while current_person.state[1] != source:
+        solution.append(current_person.state)
+        current_person = current_person.parent
+    return list(reversed(solution))
 
-        
 
 
-    
-    
-    
-    raise NotImplementedError
 
 
 def person_id_for_name(name):
