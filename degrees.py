@@ -53,9 +53,12 @@ def load_data(directory):
 
 
 def main():
+    '''
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "large"    
+    '''
+    directory = "large"
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
@@ -89,24 +92,27 @@ def shortest_path(source, target):
     that connect the source to the target.
     If no possible path, returns None.
     """
-    current_person = Node((None,source), None, None)
     frontier = QueueFrontier()
     explored = set()
-    frontier.add(current_person)
-    while current_person.state[1] != target:
+    frontier.add(Node((None,source), None, None))
+    while True:
         if frontier.empty():
             return None
         current_person = frontier.remove()
+        explored.add(current_person.state[1])
         also_starring = neighbors_for_person(current_person.state[1])
         for movie_id, person_id in also_starring:
-            if movie_id not in explored and not frontier.contains_state((movie_id, person_id)):
-                explored.add(movie_id)
+            if person_id not in explored and not frontier.contains_state((movie_id, person_id)):
                 frontier.add(Node((movie_id,person_id), current_person, None))
+        if current_person.state[1] == target:
+            break
+    print('ola')
     # Solution found
     solution = []
     while current_person.state[1] != source:
         solution.append(current_person.state)
         current_person = current_person.parent
+    print(list(reversed(solution)))
     return list(reversed(solution))
 
 
